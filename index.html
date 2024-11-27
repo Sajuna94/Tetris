@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- <script type="module" src="./js/board.js"></script> -->
+
+    <script type="module">
+        import { Game } from './js/game.js'
+
+        window.onload = function () {
+            let game = new Game();
+            window.game = game;
+
+            document.querySelector('#main-content').appendChild(game.board.canvas);
+            document.querySelector('#small-board').appendChild(game.smallBoard.canvas);
+        }
+    </script>
+</head>
+
+<body style="background-color:#313131;">
+
+    <div style="display: flex; justify-content: center;">
+        <div id="main-content" style="margin-right: 20px;">
+
+        </div>
+        <div id="small-board">
+
+        </div>
+    </div>
+
+    <button onclick="game.start()">start</button>
+    <button onclick="game.stop()">stop</button>
+    <button onclick="game.speedUp()">+</button>
+    <button onclick="game.speedDown()">-</button>
+
+</body>
+
+</html>
