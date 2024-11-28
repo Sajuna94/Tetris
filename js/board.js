@@ -99,7 +99,6 @@ export class Board {
             this.ctx.strokeStyle = "gray";
             this.ctx.lineWidth = 1;
             this.ctx.strokeRect(dx + add, dy + add, this.size * 0.8, this.size * 0.8);
-
         }));
     }
 }

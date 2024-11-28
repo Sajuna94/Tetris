@@ -44,10 +44,11 @@ export async function showStartAnime(game) {
     });
 
     // start show anime
+    game.isAnimating = true;
     console.log("[start anime] start");
 
     for (let i = 0; i < content.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 60));
+        await new Promise(resolve => setTimeout(resolve, 80));
         
         game.board.drawGird();
         content.blocks.forEach(block => {
@@ -56,12 +57,14 @@ export async function showStartAnime(game) {
         });
     }
     console.log("[start anime] end");
+    game.isAnimating = false;
 }
 
 export async function showGameOverAnime(game) {
+    game.isAnimating = true;
     console.log("[gameover anime] start");
 
-    for (let y = 0; y < game.rows; y++)
+    for (let y = game.rows - 1; y >= 0; y--)
         for (let x = 0; x < game.cols; x++) {
             await new Promise(resolve => setTimeout(resolve, 10));
             game.board.drawBox(x, y, game.board.getGrd(x, y, "#cccccc"));
@@ -70,4 +73,5 @@ export async function showGameOverAnime(game) {
     game.board.drawGird();
 
     console.log("[gameover anime] end");
+    game.isAnimating = false;
 }

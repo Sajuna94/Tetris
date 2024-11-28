@@ -38,6 +38,9 @@ export class Game {
         this.board = new Board(this.rows, this.cols, this.size);
         this.smallBoard = new Board(13, 5, this.size * 5 / 8);
 
+        // anime
+        this.isAnimating = false;
+
         this.init();
     }
 
@@ -67,11 +70,10 @@ export class Game {
         var sortedBlocks = [...this.blocks].sort((a, b) => b.y - a.y);
 
         // mark die block
-        sortedBlocks.forEach(block => this.fallBlock(block))
+        sortedBlocks.forEach(block => this.fallDownBlock(block))
         this.processGameData();
     }
     async processGameData() {
-        
         // clear full color row
         let fullRowIndexs = [];
         for (let y = 0; y < this.rows; y++) {
@@ -83,16 +85,18 @@ export class Game {
             this.colorMap.unshift(Array(this.cols).fill(null));
         })
 
+        // update live blocks
+        this.blocks = this.blocks.filter(block => !block.die);
+        this.draw();
+
         // game over
         if (this.colorMap[0].some(color => color != null)) {
             this.stop();
             await showGameOverAnime(this);
             this.reset();
+            this.start();
             return;
         }
-
-        // update live blocks
-        this.blocks = this.blocks.filter(block => !block.die);
 
         // add new block
         if (!this.blocks.length) {
@@ -103,12 +107,10 @@ export class Game {
             this.tick -= 5000;
             this.shiftBlock();
         }
-
         // auto focus block
         if (!this.blocks.some((block) => block.focus)) {
             this.blocks[0].focus = true;
         }
-        this.draw();
 
         document.getElementById("tick-box").textContent =
             "Time: " +
@@ -116,7 +118,7 @@ export class Game {
             `${Math.floor(this.tick / 100) % 10}`;
     }
 
-    fallBlock(block) {
+    fallDownBlock(block) {
         block.y += 1;
 
         if (!canPlace(this, block)) {
@@ -149,7 +151,7 @@ export class Game {
                 while (canPlace(this, block))
                     block.y += 1;
                 block.y -= 1;
-                this.fallBlock(block);
+                this.fallDownBlock(block);
                 this.processGameData();
                 break;
         }

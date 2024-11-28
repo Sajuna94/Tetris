@@ -41,6 +41,8 @@
             document.querySelector('#small-board').appendChild(game.smallBoard.canvas);
         }
         document.addEventListener("keydown", (event) => {
+            if (game.isAnimating)
+                return;
             switch (event.key.toLowerCase()) {
                 case 'a': game.moveFocusBlock('left'); break;
                 case 'd': game.moveFocusBlock('right'); break;
@@ -50,7 +52,7 @@
             }
         });
         document.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (event) => {
                 btn.blur();
             });
         });
@@ -62,27 +64,25 @@
         <!-- <div style="display: inline-flex; background-color: rgb(48, 65, 143); width: auto; border-radius: 20px; padding: 20px; position: relative;"> -->
         <div style="display: block; text-align: center;">
             <div id="main-content"></div>
-            <button onclick="game.moveFocusBlock('left')">left</button>
-            <button onclick="game.moveFocusBlock('right')">right</button>
-            <button onclick="game.moveFocusBlock('down')">down</button>
-            <button onclick="game.moveFocusBlock('rotate')">rotate</button>
+            <button onclick="if (!game.isAnimating) game.moveFocusBlock('left')">left</button>
+            <button onclick="if (!game.isAnimating) game.moveFocusBlock('right')">right</button>
+            <button onclick="if (!game.isAnimating) game.moveFocusBlock('down')">down</button>
+            <button onclick="if (!game.isAnimating) game.moveFocusBlock('rotate')">rotate</button>
         </div>
 
         <div style="display: block; margin-left: 20px;">
-            <div id="tick-box"
-                style="text-align: center; background-color: white; white-space: pre; border-radius: 3px;">Time: 0.0
-            </div>
+            <div id="tick-box" style="text-align: center; background-color: white; white-space: pre; border-radius: 3px;">Time: 0.0</div>
             <div class="text" style=" margin:20px 0 5px 0;">Next</div>
             <div id="small-board"></div>
 
             <div class="text">Speed</div>
-            <button onclick="game.speedUp()">+</button>
-            <button onclick="game.speedDown()">-</button>
+            <button onclick="if (!game.isAnimating) game.speedUp()">+</button>
+            <button onclick="if (!game.isAnimating) game.speedDown()">-</button>
 
             <div class="text">Control</div>
-            <div><button onclick="game.start()">start</button></div>
-            <div><button onclick="game.stop()">stop</button></div>
-            <div><button onclick="game.reset()">reset</button></div>
+            <div><button onclick="if (!game.isAnimating) game.start()">start</button></div>
+            <div><button onclick="if (!game.isAnimating) game.stop()">stop</button></div>
+            <div><button onclick="if (!game.isAnimating) game.reset()">reset</button></div>
         </div>
     </div>
 
