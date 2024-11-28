@@ -11,14 +11,14 @@ export function bindCanvasEvents(game) {
     // get drag block when mouse select the block on canvas
     game.board.canvas.addEventListener('mousedown', event => {
         let gridPt = getGridPoint(event, game.size);
+
         const block = game.blocks.find((block) =>
             block.contains(gridPt.x, gridPt.y) &&
             block.shape[gridPt.y - block.y][gridPt.x - block.x]
         );
 
-        game.board.drawBox(gridPt.x, gridPt.y, "white");
-
         if (block) {
+            game.board.drawBox(gridPt.x, gridPt.y, "white");
             dragBlock = block;
             mouseDownPt = gridPt;
             blockOffsetPt = { x: gridPt.x - block.x, y: gridPt.y - block.y };
@@ -41,10 +41,11 @@ export function bindCanvasEvents(game) {
         game.draw();
     });
     // if drag block defined set game current block
-    game.board.canvas.addEventListener('mouseup', () => {
+    game.board.canvas.addEventListener('mouseup', (event) => {
         if (!dragBlock) return;
 
         let gridPt = getGridPoint(event, game.size);
+        console.log(gridPt);
 
         if (gridPt.x == mouseDownPt.x && gridPt.y == mouseDownPt.y) {
             if (!dragBlock.focus)

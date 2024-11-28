@@ -1,3 +1,10 @@
+const MY_COLOR = {
+    BACK_GROUND: "#111111",
+    // BORDER: "#1f1f1f",
+    BOX: "#111111",
+    BORDER: "#333333cc"
+}
+
 export class Board {
     constructor(rows, cols, size) {
         this.rows = rows;
@@ -9,10 +16,10 @@ export class Board {
         this.canvas.width = cols * size;
         this.canvas.height = rows * size;
         this.canvas.style.border = "3px solid black";
-        this.canvas.style.backgroundColor = "#777777"
+        this.canvas.style.backgroundColor = MY_COLOR.BOX;
     }
 
-    drawBox(x, y, color = "gray") {
+    drawBox(x, y, color = MY_COLOR.BOX) {
         let dx = x * this.size;
         let dy = y * this.size;
 
@@ -21,8 +28,9 @@ export class Board {
         this.ctx.fillRect(dx, dy, this.size, this.size);
 
         // draw box border
-        this.ctx.strokeStyle = "#1f1f1f";
-        this.ctx.lineWidth = 2.3;
+
+        this.ctx.strokeStyle = MY_COLOR.BORDER;
+        this.ctx.lineWidth = 2;
         this.ctx.strokeRect(dx, dy, this.size, this.size);
     }
 

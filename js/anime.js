@@ -47,12 +47,13 @@ export async function showStartAnime(game) {
     console.log("[start anime] start");
 
     for (let i = 0; i < content.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 60));
+        
         game.board.drawGird();
         content.blocks.forEach(block => {
             block.x -= 1;
             game.board.drawBlock(block);
         });
-        await new Promise(resolve => setTimeout(resolve, 100));
     }
     console.log("[start anime] end");
 }
@@ -63,7 +64,7 @@ export async function showGameOverAnime(game) {
     for (let y = 0; y < game.rows; y++)
         for (let x = 0; x < game.cols; x++) {
             await new Promise(resolve => setTimeout(resolve, 10));
-            game.board.drawBox(x, y, "white");
+            game.board.drawBox(x, y, game.board.getGrd(x, y, "#cccccc"));
         }
     await new Promise(resolve => setTimeout(resolve, 500));
     game.board.drawGird();

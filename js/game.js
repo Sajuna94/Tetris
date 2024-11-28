@@ -4,7 +4,7 @@ import { Block } from "./block.js";
 import { bindCanvasEvents } from "./event.js";
 import { canPlace } from "./check.js";
 
-export const defaultBlocks = [
+export const DEFAULT_BLOCKS = [
     new Block([
         [1, 1],
         [1, 1]
@@ -36,16 +36,16 @@ export class Game {
 
         // game board
         this.board = new Board(this.rows, this.cols, this.size);
-        this.smallBoard = new Board(13, 5, this.size);
+        this.smallBoard = new Board(13, 5, this.size * 5 / 8);
 
         this.init();
     }
 
     async init() {
-        // await showStartAnime(this);
+        await showStartAnime(this);
         this.reset();
         bindCanvasEvents(this);
-
+        this.loop();
         this.start();
     }
 
@@ -56,56 +56,108 @@ export class Game {
 
         // game values
         this.colorMap = Array.from({ length: this.rows }, () => Array(this.cols).fill(null));
-        // for (let x = 0; x < this.cols; x++) {
-        //     this.colorMap[3][x] = "black";
-        // }
         this.blocks = [];
-        this.backupBlocks = Array.from({ length: 3 }, () => this.createBlock());
+        this.backupBlocks = Array.from({ length: 4 }, () => this.createBlock());
 
         this.stop();
+        this.draw();
     }
 
     async loop() {
         var sortedBlocks = [...this.blocks].sort((a, b) => b.y - a.y);
-        this.blocks = [];
 
-        // move down all block and check blcok live
+        // mark die block
         sortedBlocks.forEach(async block => {
-            var tmpBlock = block.copy();
             block.y += 1;
 
-            // block live
-            if (canPlace(this, block)) {
-                this.blocks.push(block);
-            }
-            // block die
-            else {
-                // set die block color of colorMap
-                tmpBlock.shape.forEach((row, y) => row.forEach((value, x) => {
-                    if (tmpBlock.y + y >= 0 && value)
-                        this.colorMap[tmpBlock.y + y][tmpBlock.x + x] = tmpBlock.color;
+            if (!canPlace(this, block)) {
+                block.die = true;
+                block.y -= 1;
+                block.shape.forEach((row, y) => row.forEach((value, x) => {
+                    if (block.y + y >= 0 && value)
+                        this.colorMap[block.y + y][block.x + x] = block.color;
                 }));
-                if (tmpBlock.y <= 0) {
-                    // GAME OVER
-                    this.stop();
-                    await showGameOverAnime(this);
-                    this.reset();
-                    this.start();
-                    return;
-                }
             }
         });
 
+        // clear full color row
+        let fullRowIndexs = [];
+        for (let y = 0; y < this.rows; y++) {
+            if (!this.colorMap[y].some(color => color == null))
+                fullRowIndexs.push(y);
+        }
+        fullRowIndexs.forEach(idx => {
+            this.colorMap.splice(idx);
+            this.colorMap.unshift(Array(this.cols).fill(null));
+        })
+
+        // game over
+        if (this.colorMap[0].some(color => color != null)) {
+            this.stop();
+            await showGameOverAnime(this);
+            this.reset();
+            return;
+        }
+
+        // update live blocks
+        this.blocks = this.blocks.filter(block => !block.die);
+
         // add new block
-        if (!this.blocks.length || this.tick >= 5000) {
+        if (!this.blocks.length) {
+            this.tick = 0;
+            this.shiftBlock();
+        }
+        if (this.tick >= 5000) {
             this.tick -= 5000;
             this.shiftBlock();
         }
+
         // auto focus block
         if (!this.blocks.some((block) => block.focus)) {
             this.blocks[0].focus = true;
         }
+        this.draw();
 
+        document.getElementById("tick-box").textContent =
+            "Time: " +
+            `${Math.floor(this.tick / 1000) % 10}.` +
+            `${Math.floor(this.tick / 100) % 10}`;
+    }
+
+
+    setColorMap(block) {
+        block.shape.forEach((row, y) => row.forEach((value, x) => {
+            if (block.y + y >= 0 && value)
+                this.colorMap[block.y + y][block.x + x] = block.color;
+        }));
+        this.blocks.splice(this.blocks.indexOf(block), 1);
+    }
+
+    moveFocusBlock(key) {
+        if (!this.blocks.length)
+            return
+
+        var block = this.blocks.find(block => block.focus);
+        var tmpBlock = block.copy();
+
+        switch (key) {
+            case 'left': block.x -= 1; break;
+            case 'right': block.x += 1; break;
+            case 'down': block.y += 1; break;
+            case 'rotate':
+                if (block.x + block.height >= this.cols)
+                    block.x = this.cols - block.height;
+                block.rotate();
+                break;
+            case 'floor':
+                while (canPlace(this, block))
+                    block.y += 1;
+                block.y -= 1;
+                break;
+        }
+        if (!canPlace(this, block)) {
+            block.set(tmpBlock);
+        }
         this.draw();
     }
 
@@ -128,6 +180,7 @@ export class Game {
         });
     }
 
+
     // start / stop control
     stop() {
         clearInterval(this.interval);
@@ -142,11 +195,11 @@ export class Game {
 
     // speed control
     speedUp() {
-        this.fallSpeed /= 1.2;
+        this.fallSpeed /= 2;
         this.start();
     }
     speedDown() {
-        this.fallSpeed *= 1.2;
+        this.fallSpeed *= 2;
         this.start();
     }
 
@@ -161,7 +214,7 @@ export class Game {
         this.blocks.push(newBlock);
     }
     createBlock() {
-        var newBlock = defaultBlocks[Math.floor(Math.random() * defaultBlocks.length)].copy();
+        var newBlock = DEFAULT_BLOCKS[Math.floor(Math.random() * DEFAULT_BLOCKS.length)].copy();
         newBlock.color = this.board.getRandomVividColor();
         return newBlock;
     }

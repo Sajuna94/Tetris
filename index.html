@@ -6,36 +6,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
-    <!-- <script type="module" src="./js/board.js"></script> -->
+    <style>
+        body {
+            background-image: url("./imgs/GLdlFnfakAQakPB.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100vh;
+            background-position: bottom right;
+        }
+
+        div {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        button {
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+
+        .text {
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+        }
+    </style>
 
     <script type="module">
         import { Game } from './js/game.js'
+        window.game = new Game();
 
         window.onload = function () {
-            let game = new Game();
-            window.game = game;
-
             document.querySelector('#main-content').appendChild(game.board.canvas);
             document.querySelector('#small-board').appendChild(game.smallBoard.canvas);
         }
+        document.addEventListener("keydown", (event) => {
+            switch (event.key.toLowerCase()) {
+                case 'a': game.moveFocusBlock('left'); break;
+                case 'd': game.moveFocusBlock('right'); break;
+                case 's': game.moveFocusBlock('down'); break;
+                case 'r': game.moveFocusBlock('rotate'); break;
+                case ' ': game.moveFocusBlock('floor'); break;
+            }
+        });
     </script>
 </head>
 
-<body style="background-color:#313131;">
-
-    <div style="display: flex; justify-content: center;">
-        <div id="main-content" style="margin-right: 20px;">
-
+<body style="background-color:#ffffff; display: block; text-align: center;">
+    <div
+        style="display: inline-flex; background-color: rgb(49, 49, 49); border-radius: 20px; padding: 20px; ">
+        <!-- <div style="display: inline-flex; background-color: rgb(48, 65, 143); width: auto; border-radius: 20px; padding: 20px; position: relative;"> -->
+        <div style="display: block; text-align: center;">
+            <div id="main-content"></div>
+            <button onclick="game.moveFocusBlock('left')">left</button>
+            <button onclick="game.moveFocusBlock('right')">right</button>
+            <button onclick="game.moveFocusBlock('down')">down</button>
+            <button onclick="game.moveFocusBlock('rotate')">rotate</button>
         </div>
-        <div id="small-board">
 
+        <div style="display: block; margin-left: 20px;">
+            <div id="tick-box" style="text-align: center; background-color: white; white-space: pre; border-radius: 3px;">Time: 0.0</div>
+            <div class="text" style=" margin:20px 0 5px 0;">Next</div>
+            <div id="small-board"></div>
+
+            <div class="text">Speed</div>
+            <button onclick="game.speedUp()">+</button>
+            <button onclick="game.speedDown()">-</button>
+
+            <div class="text">Control</div>
+            <div><button onclick="game.start()">start</button></div>
+            <div><button onclick="game.stop()">stop</button></div>
+            <div><button onclick="game.reset()">reset</button></div>
         </div>
     </div>
 
-    <button onclick="game.start()">start</button>
-    <button onclick="game.stop()">stop</button>
-    <button onclick="game.speedUp()">+</button>
-    <button onclick="game.speedDown()">-</button>
+
+
 
 </body>
 

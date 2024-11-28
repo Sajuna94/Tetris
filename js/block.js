@@ -8,6 +8,7 @@ export class Block {
 
         this.color = "red";
         this.focus = false;
+        this.die = false;
     }
 
     rotate() {
