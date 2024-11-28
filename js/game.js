@@ -67,19 +67,11 @@ export class Game {
         var sortedBlocks = [...this.blocks].sort((a, b) => b.y - a.y);
 
         // mark die block
-        sortedBlocks.forEach(async block => {
-            block.y += 1;
-
-            if (!canPlace(this, block)) {
-                block.die = true;
-                block.y -= 1;
-                block.shape.forEach((row, y) => row.forEach((value, x) => {
-                    if (block.y + y >= 0 && value)
-                        this.colorMap[block.y + y][block.x + x] = block.color;
-                }));
-            }
-        });
-
+        sortedBlocks.forEach(block => this.fallBlock(block))
+        this.processGameData();
+    }
+    async processGameData() {
+        
         // clear full color row
         let fullRowIndexs = [];
         for (let y = 0; y < this.rows; y++) {
@@ -87,7 +79,7 @@ export class Game {
                 fullRowIndexs.push(y);
         }
         fullRowIndexs.forEach(idx => {
-            this.colorMap.splice(idx);
+            this.colorMap.splice(idx, 1);
             this.colorMap.unshift(Array(this.cols).fill(null));
         })
 
@@ -124,13 +116,17 @@ export class Game {
             `${Math.floor(this.tick / 100) % 10}`;
     }
 
+    fallBlock(block) {
+        block.y += 1;
 
-    setColorMap(block) {
-        block.shape.forEach((row, y) => row.forEach((value, x) => {
-            if (block.y + y >= 0 && value)
-                this.colorMap[block.y + y][block.x + x] = block.color;
-        }));
-        this.blocks.splice(this.blocks.indexOf(block), 1);
+        if (!canPlace(this, block)) {
+            block.die = true;
+            block.y -= 1;
+            block.shape.forEach((row, y) => row.forEach((value, x) => {
+                if (block.y + y >= 0 && value)
+                    this.colorMap[block.y + y][block.x + x] = block.color;
+            }));
+        }
     }
 
     moveFocusBlock(key) {
@@ -153,6 +149,8 @@ export class Game {
                 while (canPlace(this, block))
                     block.y += 1;
                 block.y -= 1;
+                this.fallBlock(block);
+                this.processGameData();
                 break;
         }
         if (!canPlace(this, block)) {
@@ -178,6 +176,20 @@ export class Game {
             y += block.height + 1;
             this.smallBoard.drawBlock(block);
         });
+
+        // test
+        var sourceBlock = this.blocks.find(block => block.focus);
+        if (sourceBlock) {
+            var tmpBlock = sourceBlock.copy();
+
+            tmpBlock.y += tmpBlock.height;
+            while (canPlace(this, tmpBlock))
+                tmpBlock.y += 1;
+            tmpBlock.y -= 1;
+
+            if (tmpBlock.y >= sourceBlock.y + sourceBlock.height)
+                this.board.drawAvoidBlock(tmpBlock);
+        }
     }
 
 

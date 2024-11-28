@@ -54,7 +54,7 @@ export class Board {
     drawBlockBorder(block) {
         let dx = block.x * this.size - 2;
         let dy = block.y * this.size - 2;
-        this.ctx.lineWidth = 3;
+        this.ctx.lineWidth = 2.5;
         this.ctx.strokeStyle = "red";
         this.ctx.strokeRect(dx, dy, block.width * this.size + 4, block.height * this.size + 4);
     }
@@ -86,5 +86,20 @@ export class Board {
         let saturation = 90;
         let lightness = 40;
         return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    drawAvoidBlock(block) {
+        block.shape.forEach((row, y) => row.forEach((val, x) => {
+            if (!val) return;
+
+            let dx = (x + block.x) * this.size;
+            let dy = (y + block.y) * this.size;
+            let add = this.size * 0.1;
+
+            this.ctx.strokeStyle = "gray";
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeRect(dx + add, dy + add, this.size * 0.8, this.size * 0.8);
+
+        }));
     }
 }
