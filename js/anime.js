@@ -25,6 +25,8 @@ const numberBlock = {
 };
 
 export async function showStartAnime(game) {
+    game.stop();
+
     const content = {
         blocks: [ // 2024
             numberBlock.TWO.copy(),
@@ -61,6 +63,8 @@ export async function showStartAnime(game) {
 }
 
 export async function showGameOverAnime(game) {
+    game.stop();
+
     game.isAnimating = true;
     console.log("[gameover anime] start");
 

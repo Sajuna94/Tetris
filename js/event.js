@@ -34,11 +34,11 @@ export function bindCanvasEvents(game) {
         dragBlock.x = gridPt.x - blockOffsetPt.x;
         dragBlock.y = gridPt.y - blockOffsetPt.y;
 
-        // if not reset drag block
+        // if cant place dragBlock, reset dragBlock
         if (!canPlace(game, dragBlock)) {
             dragBlock.set(tmpBlock);
         }
-        game.draw();
+        game.display();
     });
     // if drag block defined set game current block
     game.board.canvas.addEventListener('mouseup', (event) => {
@@ -53,7 +53,7 @@ export function bindCanvasEvents(game) {
             dragBlock.focus = !dragBlock.focus;
         }
         dragBlock = null;
-        game.draw();
+        gane.display();
     });
     // clear drag block when mouse leaves the canvas
     game.board.canvas.addEventListener('mouseleave', () => {

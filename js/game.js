@@ -41,18 +41,10 @@ export class Game {
         // anime
         this.isAnimating = false;
 
-        this.init();
-    }
-
-    async init() {
-        await showStartAnime(this);
         this.reset();
-        bindCanvasEvents(this);
-        this.loop();
-        this.start();
     }
 
-    reset() {
+    async reset() {
         // for 5s add block control
         this.fallSpeed = 1000;
         this.tick = 0;
@@ -62,17 +54,20 @@ export class Game {
         this.blocks = [];
         this.backupBlocks = Array.from({ length: 4 }, () => this.createBlock());
 
-        this.stop();
-        this.draw();
+        await showStartAnime(this);
+        this.loop();
+        this.start();
+        this.display();
     }
 
-    async loop() {
-        var sortedBlocks = [...this.blocks].sort((a, b) => b.y - a.y);
+    loop() {
+        this.blocks = this.blocks.sort((a, b) => b.y - a.y);
 
         // mark die block
-        sortedBlocks.forEach(block => this.fallDownBlock(block))
+        this.blocks.forEach(block => this.fallDownBlock(block))
         this.processGameData();
     }
+
     async processGameData() {
         // clear full color row
         let fullRowIndexs = [];
@@ -87,20 +82,17 @@ export class Game {
 
         // update live blocks
         this.blocks = this.blocks.filter(block => !block.die);
-        this.draw();
+        this.display();
 
         // game over
         if (this.colorMap[0].some(color => color != null)) {
-            this.stop();
             await showGameOverAnime(this);
             this.reset();
-            this.start();
             return;
         }
 
         // add new block
         if (!this.blocks.length) {
-            this.tick = 0;
             this.shiftBlock();
         }
         if (this.tick >= 5000) {
@@ -111,11 +103,6 @@ export class Game {
         if (!this.blocks.some((block) => block.focus)) {
             this.blocks[0].focus = true;
         }
-
-        document.getElementById("tick-box").textContent =
-            "Time: " +
-            `${Math.floor(this.tick / 1000) % 10}.` +
-            `${Math.floor(this.tick / 100) % 10}`;
     }
 
     fallDownBlock(block) {
@@ -154,15 +141,16 @@ export class Game {
                 this.fallDownBlock(block);
                 this.processGameData();
                 break;
+            case 'up': block.y -= 1; break;
         }
         if (!canPlace(this, block)) {
             block.set(tmpBlock);
         }
-        this.draw();
+        this.display();
     }
 
     // draw everything
-    draw() {
+    display() {
         // main board
         this.board.drawGird();
         this.blocks.forEach(block => this.board.drawBlock(block));
@@ -192,6 +180,12 @@ export class Game {
             if (tmpBlock.y >= sourceBlock.y + sourceBlock.height)
                 this.board.drawAvoidBlock(tmpBlock);
         }
+
+        // tick text
+        document.getElementById("tick-box").textContent =
+        "Time: " +
+        `${Math.floor(this.tick / 1000) % 10}.` +
+        `${Math.floor(this.tick / 100) % 10}`;
     }
 
 

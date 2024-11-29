@@ -30,11 +30,20 @@
             font-size: 15px;
             font-weight: bold;
         }
+
+        #ico-button {
+            padding: 0 10px 0 10px;
+            height: 30px;
+            margin: 10px 5px 0 5px;
+        }
     </style>
 
     <script type="module">
         import { Game } from './js/game.js'
+        import { showStartAnime } from './js/anime.js'
+
         window.game = new Game();
+        window.showStartAnime = showStartAnime;
 
         window.onload = function () {
             document.querySelector('#main-content').appendChild(game.board.canvas);
@@ -49,6 +58,9 @@
                 case 's': game.moveFocusBlock('down'); break;
                 case 'r': game.moveFocusBlock('rotate'); break;
                 case ' ': game.moveFocusBlock('floor'); break;
+                case 'w': game.moveFocusBlock('up'); break;
+                case '+': game.speedUp(); break;
+                case '+': game.speedDown(); break;
             }
         });
         document.querySelectorAll('button').forEach(btn => {
@@ -63,29 +75,29 @@
     <div style="display: inline-flex; background-color: rgb(49, 49, 49); border-radius: 20px; padding: 20px; ">
         <!-- <div style="display: inline-flex; background-color: rgb(48, 65, 143); width: auto; border-radius: 20px; padding: 20px; position: relative;"> -->
         <div style="display: block; text-align: center;">
-            <div id="main-content"></div>
-            <button onclick="if (!game.isAnimating) game.moveFocusBlock('left')">left</button>
-            <button onclick="if (!game.isAnimating) game.moveFocusBlock('right')">right</button>
-            <button onclick="if (!game.isAnimating) game.moveFocusBlock('down')">down</button>
-            <button onclick="if (!game.isAnimating) game.moveFocusBlock('rotate')">rotate</button>
+            <div id="main-content""></div>
+            <button id="ico-button" onclick="if (!game.isAnimating) game.moveFocusBlock('left')">L</button>
+            <button id="ico-button" onclick="if (!game.isAnimating) game.moveFocusBlock('right')">R</button>
+            <button id="ico-button" onclick="if (!game.isAnimating) game.moveFocusBlock('down')">D</button>
+            <button id="ico-button" onclick="if (!game.isAnimating) game.moveFocusBlock('rotate')">RT</button>
         </div>
 
         <div style="display: block; margin-left: 20px;">
-            <div id="tick-box" style="text-align: center; background-color: white; white-space: pre; border-radius: 3px;">Time: 0.0</div>
-            <div class="text" style=" margin:20px 0 5px 0;">Next</div>
+            <div id="tick-box"
+                style="text-align: center; background-color: white; white-space: pre; border-radius: 3px;">Time: 0.0</div>
+            <div class="text" style=" margin: 20px 0 5px 0;">Next</div>
             <div id="small-board"></div>
 
-            <div class="text">Speed</div>
-            <button onclick="if (!game.isAnimating) game.speedUp()">+</button>
-            <button onclick="if (!game.isAnimating) game.speedDown()">-</button>
+            <div class="text" style="margin: 20px 0 5px 0;">Speed</div>
+            <button id="ico-button" onclick="if (!game.isAnimating) game.speedUp()">+</button>
+            <button id="ico-button" onclick="if (!game.isAnimating) game.speedDown()">-</button>
 
-            <div class="text">Control</div>
-            <div><button onclick="if (!game.isAnimating) game.start()">start</button></div>
-            <div><button onclick="if (!game.isAnimating) game.stop()">stop</button></div>
-            <div><button onclick="if (!game.isAnimating) game.reset()">reset</button></div>
+            <div class="text" style="margin: 20px 0 5px 0;">Control</div>
+            <div><button id="ico-button" onclick="if (!game.isAnimating) game.start()">Start</button></div>
+            <div><button id="ico-button" onclick="if (!game.isAnimating) game.stop()">Stop</button></div>
+            <div><button id="ico-button" onclick="if (!game.isAnimating) game.reset()">Reset</button></div>
         </div>
     </div>
-
 
 </body>
 
