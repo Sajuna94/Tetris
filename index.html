@@ -40,10 +40,8 @@
 
     <script type="module">
         import { Game } from './js/game.js'
-        import { showStartAnime } from './js/anime.js'
 
         window.game = new Game();
-        window.showStartAnime = showStartAnime;
 
         window.onload = function () {
             document.querySelector('#main-content').appendChild(game.board.canvas);

@@ -1,7 +1,6 @@
 import { showGameOverAnime, showStartAnime } from "./anime.js";
 import { Board } from "./board.js";
 import { Block } from "./block.js";
-import { bindCanvasEvents } from "./event.js";
 import { canPlace } from "./check.js";
 
 export const DEFAULT_BLOCKS = [
@@ -55,6 +54,7 @@ export class Game {
         this.backupBlocks = Array.from({ length: 4 }, () => this.createBlock());
 
         await showStartAnime(this);
+        // 解決顯示時序問題 先loop一次
         this.loop();
         this.start();
         this.display();
@@ -183,13 +183,13 @@ export class Game {
 
         // tick text
         document.getElementById("tick-box").textContent =
-        "Time: " +
-        `${Math.floor(this.tick / 1000) % 10}.` +
-        `${Math.floor(this.tick / 100) % 10}`;
+            "Time: " +
+            `${Math.floor(this.tick / 1000) % 10}.` +
+            `${Math.floor(this.tick / 100) % 10}`;
     }
 
 
-    // start / stop control
+    // start & stop control
     stop() {
         clearInterval(this.interval);
     }

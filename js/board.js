@@ -28,7 +28,6 @@ export class Board {
         this.ctx.fillRect(dx, dy, this.size, this.size);
 
         // draw box border
-
         this.ctx.strokeStyle = MY_COLOR.BORDER;
         this.ctx.lineWidth = 2;
         this.ctx.strokeRect(dx, dy, this.size, this.size);
