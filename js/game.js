@@ -2,6 +2,7 @@ import { showGameOverAnime, showStartAnime } from "./anime.js";
 import { Board } from "./board.js";
 import { Block } from "./block.js";
 import { canPlace } from "./check.js";
+import { bindCanvasEvents } from "./event.js";
 
 export const DEFAULT_BLOCKS = [
     new Block([
@@ -41,6 +42,7 @@ export class Game {
         this.isAnimating = false;
 
         this.reset();
+        bindCanvasEvents(this);
     }
 
     async reset() {

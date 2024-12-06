@@ -4,14 +4,13 @@ import { Game } from "./game.js";
 export function bindCanvasEvents(game) {
     if (!(game instanceof Game))
         return;
-
+    
     var dragBlock = null;
     let mouseDownPt = null, blockOffsetPt = null;
 
     // get drag block when mouse select the block on canvas
     game.board.canvas.addEventListener('mousedown', event => {
         let gridPt = getGridPoint(event, game.size);
-
         const block = game.blocks.find((block) =>
             block.contains(gridPt.x, gridPt.y) &&
             block.shape[gridPt.y - block.y][gridPt.x - block.x]
