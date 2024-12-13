@@ -49,14 +49,16 @@ export async function showStartAnime(game) {
     game.isAnimating = true;
     console.log("[start anime] start");
 
+    game.board.drawGird();
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
     for (let i = 0; i < content.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 80));
-        
         game.board.drawGird();
         content.blocks.forEach(block => {
             block.x -= 1;
             game.board.drawBlock(block);
         });
+        await new Promise(resolve => setTimeout(resolve, 100 - i));
     }
     console.log("[start anime] end");
     game.isAnimating = false;

@@ -68,6 +68,7 @@ export class Game {
         // mark die block
         this.blocks.forEach(block => this.fallDownBlock(block))
         this.processGameData();
+        this.display();
     }
 
     async processGameData() {
@@ -84,7 +85,7 @@ export class Game {
 
         // update live blocks
         this.blocks = this.blocks.filter(block => !block.die);
-        this.display();
+        
 
         // game over
         if (this.colorMap[0].some(color => color != null)) {
@@ -125,6 +126,9 @@ export class Game {
             return
 
         var block = this.blocks.find(block => block.focus);
+        if (!block)
+            return
+        
         var tmpBlock = block.copy();
 
         switch (key) {

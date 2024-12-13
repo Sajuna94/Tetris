@@ -4,7 +4,7 @@ import { Game } from "./game.js";
 export function bindCanvasEvents(game) {
     if (!(game instanceof Game))
         return;
-    
+
     var dragBlock = null;
     let mouseDownPt = null, blockOffsetPt = null;
 
@@ -44,15 +44,15 @@ export function bindCanvasEvents(game) {
         if (!dragBlock) return;
 
         let gridPt = getGridPoint(event, game.size);
-        console.log(gridPt);
-
+        
         if (gridPt.x == mouseDownPt.x && gridPt.y == mouseDownPt.y) {
+            console.log(`select:`, dragBlock);
             if (!dragBlock.focus)
                 game.blocks.forEach((block) => block.focus = false);
             dragBlock.focus = !dragBlock.focus;
         }
         dragBlock = null;
-        gane.display();
+        game.display();
     });
     // clear drag block when mouse leaves the canvas
     game.board.canvas.addEventListener('mouseleave', () => {
